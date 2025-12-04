@@ -4,7 +4,7 @@
     import FeedbackDisplay from "./lib/components/FeedbackDisplay.svelte";
     import Piano from "./lib/components/Piano.svelte";
     import { showConfigDialog } from "./lib/components/ConfigDialog.svelte";
-    import { configuration } from "./lib/stores";
+    import { config } from "./lib/stores";
     import PerformanceGraph from "./lib/components/PerformanceGraph.svelte";
 
     // Constants
@@ -16,7 +16,7 @@
 
     async function handleStart() {
         if (!sampler) sampler = await startTone();
-        const { allowedQualities, numOfChords } = $configuration;
+        const { allowedQualities, numOfChords } = $config;
         expectedChords = genRandomChords([...allowedQualities], numOfChords);
         isPlaying = true;
     }

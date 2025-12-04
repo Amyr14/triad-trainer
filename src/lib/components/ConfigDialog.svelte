@@ -11,25 +11,29 @@
 </script>
 
 <script lang="ts">
-    import { configuration } from "../stores";
+    import { config } from "../stores";
     import { CHORD_QUALITIES, ChordQuality, qualityLabel } from "../utils";
 
     let { onClose }: { onClose: () => void } = $props();
 
     let localConfig = {
-        ...$configuration,
-        allowedQualities: new Set([...$configuration.allowedQualities]),
+        ...$config,
+        allowedQualities: [...$config.allowedQualities],
     };
 
-    // helper to toggle a quality in the configuration set
+    // helper to toggle a quality in the config set
     function toggleQuality(q: ChordQuality) {
-        const qualitiesSet = localConfig.allowedQualities;
-        if (qualitiesSet.has(q)) qualitiesSet.delete(q);
-        else qualitiesSet.add(q);
+        const allowedQualities = localConfig.allowedQualities;
+        if (allowedQualities.includes(q)) {
+            const qIdx = allowedQualities.findIndex(
+                quality => quality == q
+            ) as number;
+            allowedQualities.splice(qIdx, 1);
+        } else allowedQualities.push(q);
     }
 
     function onSave() {
-        configuration.set(localConfig);
+        config.set(localConfig);
         onClose();
     }
 </script>
@@ -58,7 +62,7 @@
                                 type="checkbox"
                                 name={idx.toString()}
                                 onchange={() => toggleQuality(quality)}
-                                checked={$configuration.allowedQualities.has(
+                                checked={$config.allowedQualities.includes(
                                     quality
                                 )}
                             />

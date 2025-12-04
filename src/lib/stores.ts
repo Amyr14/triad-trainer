@@ -1,9 +1,9 @@
-import { writable } from 'svelte/store';
+import { get, writable, type Updater, type Writable } from 'svelte/store';
 import { CHORD_QUALITIES, ChordQuality, PITCHES, type Pitch } from './utils';
 
 interface Config {
     numOfChords: number,
-    allowedQualities: Set<ChordQuality>
+    allowedQualities: ChordQuality[]
 }
 
 interface Mistakes {
@@ -13,10 +13,6 @@ interface Mistakes {
 
 export const selectedNotes = writable<string[]>([]);
 export const solutionNotes = writable<string[]>([]);
-export const configuration = writable<Config>({
-    numOfChords: 10,
-    allowedQualities: new Set(CHORD_QUALITIES)
-})
 
 function createMistakesStore() {
     const mistakesJson = localStorage.getItem('mistakes');
@@ -44,5 +40,31 @@ function createMistakesStore() {
     }
 }
 
+function createConfigStore(): Writable<Config> {
+    const configJson = localStorage.getItem('config');
+    let config: Config | null = configJson ? JSON.parse(configJson) : null;
+    if (!config) {
+        config = {
+            numOfChords: 10,
+            allowedQualities: [...CHORD_QUALITIES]
+        }
+    }
+    const configStore = writable<Config>(config);
+    return {
+        ...configStore,
+        update: (updater: Updater<Config>) => {
+            configStore.update(updater);
+            const newConfig = get(configStore);
+            localStorage.setItem('config', JSON.stringify(newConfig));
+            return newConfig;
+        },
+        set: (newConfig: Config) => {
+            configStore.set(newConfig);
+            localStorage.setItem('config', JSON.stringify(get(configStore)));
+        }
+    }
+}
+
 export const mistakes = createMistakesStore();
+export const config = createConfigStore();
 export type SelectedNotesStore = typeof selectedNotes;
