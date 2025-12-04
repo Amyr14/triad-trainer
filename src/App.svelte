@@ -35,8 +35,8 @@
                     > no teclado e piano. O Triad Trainer é configurável, você pode
                     escolher quais qualidades você quer praticar, assim como a quantidade
                     de acordes por sessão de estudo. Oferecemos também um gráfico
-                    de desempenho para você identificar suas lacunas e e praticar
-                    de forma mais eficiente.
+                    de desempenho para você identificar suas lacunas e praticar de
+                    forma mais eficiente.
                 </p>
             </div>
             <div class="button-row">
